@@ -169,6 +169,7 @@ class EmojiCollectionViewDelegate: NSObject, UICollectionViewDelegateFlowLayout 
 }
 ```
 
+
 ### HeaderView   
 **[EmojiHeaderView](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/EmojiHeaderView.swift)**  
 ```swift
