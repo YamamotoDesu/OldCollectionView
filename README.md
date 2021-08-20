@@ -12,6 +12,126 @@ For your data source, you can create a custom data source object by adopting the
 ### Storyboard  
 <img src="https://user-images.githubusercontent.com/47273077/130161412-589ca8c6-ac8b-41b4-bfd1-a134b8d12450.png" width="600" height="300">  
 
+
+### Data   
+**[Emoji](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/Emoji.swift)**  
+```swift
+class Emoji {
+    enum Category: String, CaseIterable {
+        case smileysAndPeople = "Smileys & People"
+        case animalsAndNature = "Animals & Nature"
+        case foodAndDrink = "Food & Drink"
+        case activity = "Activity"
+        case travelAndPlaces = "Travel & Places"
+        case objects = "Objects"
+        case symbols = "Symbols"
+        case flags = "Flags"
+    }
+    
+    static let shared = Emoji()
+    
+    let sections = Category.allCases
+    
+    var data: [Category: [String]] = [
+        .smileysAndPeople: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "☺️", "😊", "🤯", "😇", "🙂", "😎", "🤩", "😴", "😬", "🥵"],
+        .animalsAndNature: ["🐶", "🐱", "🦊", "🐻", "🦁", "🐮", "🐸", "🐵", "🐔", "🐧", "🦉", "🐴", "🦋", "🐙", "🐬", "🐈", "🌲", "🌍"],
+        .foodAndDrink: ["🍏", "🍇", "🍓", "🥝", "🍅", "🌽", "🥕", "🥨", "🧀", "🍖", "🦴", "🌮", "🍣", "🥤", "🥃", "🥟", "🍺", "🍪"],
+        .activity: ["⚽️", "🏉", "🥏", "🏏", "🥅", "🛹", "🛷", "🏋️‍♂️", "🏅", "🎪", "🎬", "🎼", "🎲", "🎳", "🎮", "🎸", "🧩", "🏆"],
+        .travelAndPlaces: ["🚗", "🚑", "🚨", "🚠", "🚟", "🚄", "✈️", "🚤", "🚧", "🏠", "⛱", "🌋", "⛩", "🕋", "⛪️", "🌠", "🌇", "🗽"],
+        .objects: ["⌚️", "🖱", "🖲", "💾", "☎️", "📺", "💴", "🔨", "🧰", "🧲", "🎁", "🎊", "✉️", "🗳", "📌", "🔍", "🔐", "💰"],
+        .symbols: ["❤️", "💔", "☮️", "☯️", "☢️", "🆚", "🉐", "🆘", "❌", "💯", "‼️", "🚸", "⚜️", "♿️", "🔈", "🔔", "♣️", "🚸"],
+        .flags: ["🏳️", "🇺🇸", "🇯🇵", "🇩🇪", "🇨🇦", "🇲🇽", "🇧🇷", "🇰🇪", "🇳🇬", "🇮🇳", "🇷🇺", "🇦🇺", "🇫🇷", "🇵🇱", "🇻🇳", "🇱🇹", "🇱🇰", "🇪🇪"]
+    ]
+    
+    private init() {}
+    
+    static func randomEmoji() -> (Category, String) {
+        let extraEmoji = ["💀", "🤖", "👍", "🤘🏾", "🖐🏼", "👇🏽", "🙏🏾", "👀", "👩🏽‍🦱", "👩🏿", "🧕🏽", "🕵🏻‍♂️", "👨🏼‍💻", "👭", "🧚🏾‍♂️", "💍"]
+        let randomIndex = Int.random(in: 0..<extraEmoji.count)
+        return (.smileysAndPeople, extraEmoji[randomIndex])
+    }
+    
+    func emoji(at indePath: IndexPath) -> String?
+    {
+        let catagory = sections[indePath.section]
+        return data[catagory]?[indePath.item]
+    }
+}
+
+```
+
+### DataSource   
+**[DataSource](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/DataSource.swift)**  
+```swift
+import UIKit
+
+class DataSource: NSObject, UICollectionViewDataSource {
+    let emoji = Emoji.shared
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        emoji.sections.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        let catagory = emoji.sections[section]
+        let emoji = self.emoji.data[catagory]
+        
+        return emoji?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let emojiCell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCell.reuseIdentifier, for: indexPath) as? EmojiCell else {
+            fatalError("Cell cannot be created")
+        }
+        
+        let catagory = emoji.sections[indexPath.section]
+        let emoji = self.emoji.data[catagory]?[indexPath.item] ?? ""
+        
+        emojiCell.emojiLabel.text = emoji
+        
+        return emojiCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let emojiHeaderView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: EmojiHeaderView.reuseIdentifier, for: indexPath) as? EmojiHeaderView else {
+            fatalError("Cannot create EmojiHeader")
+        }
+        
+        let catagory = emoji.sections[indexPath.section]
+        emojiHeaderView.textLabel.text = catagory.rawValue
+        
+        return emojiHeaderView
+    }
+}
+
+extension DataSource {
+    func addEmoji(_ emoji: String, to catagory: Emoji.Category) {
+        guard var emojiData = self.emoji.data[catagory] else {
+            return
+        }
+        emojiData.append(emoji)
+        self.emoji.data.updateValue(emojiData, forKey: catagory)
+    }
+    
+    func deleteEmoji(at indexPath: IndexPath) {
+        let catagory = emoji.sections[indexPath.section]
+        guard var emojiData = emoji.data[catagory] else {
+            return
+        }
+        emojiData.remove(at: indexPath.item)
+        
+        emoji.data.updateValue(emojiData, forKey: catagory)
+    }
+    
+    func deleteEmoji(at indexPaths: [IndexPath]) {
+        for path in indexPaths {
+            deleteEmoji(at: path)
+        }
+    }
+}
+
+```
+
 ### HeaderView   
 **[EmojiHeaderView](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/EmojiHeaderView.swift)**  
 ```swift
@@ -23,7 +143,7 @@ class EmojiHeaderView: UICollectionReusableView {
 }
 ```
 
-### EmojiCell   
+### Cell   
 **[EmojiHeaderView](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/EmojiCell.swift)**  
 ```swift
 import UIKit
