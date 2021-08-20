@@ -13,7 +13,7 @@ For your data source, you can create a custom data source object by adopting the
 <img src="https://user-images.githubusercontent.com/47273077/130161412-589ca8c6-ac8b-41b4-bfd1-a134b8d12450.png" width="600" height="300">  
 
 ### HeaderView   
-**[EmojiHeaderView](https://github.com/YamamotoDesu/SimpleCollectionView/blob/main/CollectionView/NumberCell.swift)**  
+**[EmojiHeaderView](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/EmojiHeaderView.swift)**  
 ```swift
 import UIKit
 
