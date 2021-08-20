@@ -145,7 +145,8 @@ class EmojiCollectionViewDelegate: NSObject, UICollectionViewDelegateFlowLayout 
         self.numbrOfItemsPerRow = numbrOfItemsPerRow
         self.interItemSpacing = interItemSpacing
     }
-
+    
+    // set the size of items
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let maxWidth = UIScreen.main.bounds.width
         let totalSpacing = interItemSpacing * numbrOfItemsPerRow
@@ -154,10 +155,12 @@ class EmojiCollectionViewDelegate: NSObject, UICollectionViewDelegateFlowLayout 
         return CGSize(width: itemWidth, height: itemWidth)
     }
 
+    //  spacing between successive items of a single row
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return interItemSpacing
     }
 
+    // margin sizes or return different margin sizes for each section
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if section == 0 {
             return UIEdgeInsets(top: 0, left: 0, bottom: interItemSpacing/2, right: 0)
@@ -168,7 +171,7 @@ class EmojiCollectionViewDelegate: NSObject, UICollectionViewDelegateFlowLayout 
     
 }
 ```
-
+<img src="https://user-images.githubusercontent.com/47273077/130227126-6fac9efa-bc88-4263-a435-096e086010b1.png" width="900" height="500">
 
 ### HeaderView   
 **[EmojiHeaderView](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/EmojiHeaderView.swift)**  
