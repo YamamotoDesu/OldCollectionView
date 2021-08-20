@@ -22,3 +22,28 @@ class EmojiHeaderView: UICollectionReusableView {
     @IBOutlet weak var textLabel: UILabel!
 }
 ```
+
+### EmojiCell   
+**[EmojiHeaderView](https://github.com/YamamotoDesu/OldCollectionView/blob/main/EmojiLibrary/EmojiCell.swift)**  
+```swift
+import UIKit
+
+class EmojiCell: UICollectionViewCell {
+    static let reuseIdentifier = String(describing: EmojiCell.self)
+    
+    @IBOutlet weak var emojiLabel: UILabel!
+    
+    var isEditing: Bool = false
+    
+    override var isSelected: Bool {
+        didSet {
+            if isEditing {
+                contentView.backgroundColor = isSelected ? UIColor.systemRed.withAlphaComponent(0.5) : UIColor.systemGroupedBackground
+            } else {
+                contentView.backgroundColor = UIColor.systemGroupedBackground
+            }
+        }
+    }
+}
+
+```
